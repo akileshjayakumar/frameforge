@@ -1,6 +1,11 @@
 import { geminiClient, MODELS } from "./client";
 import { runWithGeminiLimiter } from "./rate-limit";
-import { VideoStyle, VideoDuration, VideoAspectRatio, VideoResolution } from "@/types/game";
+import {
+  VideoStyle,
+  VideoDuration,
+  VideoAspectRatio,
+  VideoResolution,
+} from "@/types/game";
 
 /**
  * Video operation response from Veo 3.1
@@ -27,22 +32,21 @@ export interface VideoOperation {
 const stylePrompts: Record<VideoStyle, string> = {
   "live-action":
     "Photorealistic cinematic footage with natural lighting, real-world textures, film grain, and Hollywood-quality cinematography. Shallow depth of field, practical lighting sources.",
-  "animation":
+  animation:
     "High-quality 3D animated style with vibrant colors, expressive characters, smooth motion, and Pixar-quality rendering. Clean lines and polished visuals.",
   "stop-motion":
     "Whimsical stop-motion animation style with handcrafted textures, visible fingerprints on clay, charming imperfections, and frame-by-frame movement.",
-  "anime":
+  anime:
     "Japanese anime style with dynamic camera angles, expressive faces, speed lines, dramatic lighting, cel-shading, and vibrant color palettes.",
-  "watercolor":
+  watercolor:
     "Artistic watercolor animation with flowing paint textures, soft edges, dreamy color bleeds, and ethereal transitions between scenes.",
-  "noir":
-    "Classic film noir style in high-contrast black and white with dramatic shadows, venetian blind lighting, rain-slicked streets, and moody atmosphere.",
+  noir: "Classic film noir style in high-contrast black and white with dramatic shadows, venetian blind lighting, rain-slicked streets, and moody atmosphere.",
 };
 
 /**
  * Generate a story video using Veo 3.1
  * Uses reference images and style config only - no story text to reduce token usage
- * 
+ *
  * @param genre - The story genre (thriller, sci-fi, fantasy, etc.)
  * @param referenceImages - Array of base64 image data URIs (up to 4 used as reference)
  * @param style - Video style (live-action, animation, etc.)
@@ -62,9 +66,11 @@ export async function generateStoryVideo(
 ): Promise<VideoOperation> {
   try {
     const styleDescription = stylePrompts[style];
-    
+
     // Minimal prompt focused on style and config - images provide visual narrative
-    const videoPrompt = `Create a ${durationSeconds}-second ${styleDescription} video in ${genre} style. Use the reference images as visual guidance.${negativePrompt ? ` Avoid: ${negativePrompt}` : ''}`;
+    const videoPrompt = `Create a ${durationSeconds}-second ${styleDescription} video in ${genre} style. Use the reference images as visual guidance.${
+      negativePrompt ? ` Avoid: ${negativePrompt}` : ""
+    }`;
 
     const config: Record<string, unknown> = {
       aspectRatio: aspectRatio,
@@ -111,7 +117,7 @@ export async function generateStoryVideo(
     }
 
     const operation = await runWithGeminiLimiter(() =>
-      geminiClient.models.generateVideos(generateRequest)
+      geminiClient.models.generateVideos(generateRequest as any)
     );
     return operation as unknown as VideoOperation;
   } catch (error) {
@@ -127,7 +133,7 @@ export async function generateStoryVideo(
 /**
  * Poll video operation status using the Veo 3.1 REST API
  * Uses REST API directly since SDK operation objects can't be serialized over HTTP
- * 
+ *
  * @param operationName - The operation name string (e.g., "models/veo-3.1-generate-preview/operations/...")
  */
 export async function pollVideoOperation(
@@ -146,17 +152,18 @@ export async function pollVideoOperation(
         },
       }
     );
-    
+
     if (!response.ok) {
       const errorText = await response.text();
       throw new Error(`HTTP ${response.status}: ${errorText}`);
     }
-    
+
     const data = await response.json();
-    
+
     // Transform REST API response to our VideoOperation format
-    const videoUri = data.response?.generateVideoResponse?.generatedSamples?.[0]?.video?.uri;
-    
+    const videoUri =
+      data.response?.generateVideoResponse?.generatedSamples?.[0]?.video?.uri;
+
     return {
       name: operationName,
       done: data.done || false,
@@ -171,7 +178,9 @@ export async function pollVideoOperation(
             ],
           }
         : undefined,
-      error: data.error ? { message: data.error.message || "Unknown error" } : undefined,
+      error: data.error
+        ? { message: data.error.message || "Unknown error" }
+        : undefined,
     };
   } catch (error) {
     console.error("Error polling video operation:", error);
@@ -185,16 +194,17 @@ export async function pollVideoOperation(
 
 /**
  * Download a generated video file
- * 
+ *
  * @param videoFile - The video file object from the operation response
  */
-export async function downloadVideo(
-  videoFile: { uri: string }
-): Promise<Uint8Array> {
+export async function downloadVideo(videoFile: {
+  uri: string;
+}): Promise<Uint8Array> {
   try {
     const result = await geminiClient.files.download({
       file: videoFile,
-    });
+      downloadPath: "", // Temporary path, not used when returning bytes directly
+    } as any);
     return result as unknown as Uint8Array;
   } catch (error) {
     console.error("Error downloading video:", error);

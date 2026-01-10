@@ -36,7 +36,13 @@ export function LogoParticleAnimation({
   // Create particles
   useEffect(() => {
     const newParticles: Particle[] = [];
-    const geminiColors = ["#439DDF", "#4F87ED", "#9476C5", "#BC688E", "#D6645D"];
+    const geminiColors = [
+      "#439DDF",
+      "#4F87ED",
+      "#9476C5",
+      "#BC688E",
+      "#D6645D",
+    ];
     const bananaColors = ["#FFD700", "#FFA500", "#FF8C00", "#FFD700"];
 
     for (let i = 0; i < particleCount; i++) {
@@ -60,8 +66,8 @@ export function LogoParticleAnimation({
   }, [particleCount]);
 
   // Animate particles with requestAnimationFrame for smoother animation
-  const animationFrameRef = useRef<number>();
-  
+  const animationFrameRef = useRef<number | undefined>(undefined);
+
   useEffect(() => {
     const animate = () => {
       setParticles((prev) =>
@@ -69,14 +75,17 @@ export function LogoParticleAnimation({
           ...p,
           x: (p.x + p.vx + 100) % 100,
           y: (p.y + p.vy + 100) % 100,
-          opacity: Math.max(0.2, Math.min(1, p.opacity + (Math.random() - 0.5) * 0.05)),
+          opacity: Math.max(
+            0.2,
+            Math.min(1, p.opacity + (Math.random() - 0.5) * 0.05)
+          ),
         }))
       );
       animationFrameRef.current = requestAnimationFrame(animate);
     };
-    
+
     animationFrameRef.current = requestAnimationFrame(animate);
-    
+
     return () => {
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
@@ -114,7 +123,11 @@ export function LogoParticleAnimation({
               boxShadow: `0 0 ${particle.size * 2}px ${particle.color}`,
             }}
             animate={{
-              opacity: [particle.opacity * 0.7, particle.opacity, particle.opacity * 0.7],
+              opacity: [
+                particle.opacity * 0.7,
+                particle.opacity,
+                particle.opacity * 0.7,
+              ],
             }}
             transition={{
               duration: 2 + Math.random() * 2,
@@ -142,7 +155,9 @@ export function LogoParticleAnimation({
                 onError={() => setLogoError(true)}
               />
             ) : (
-              <span className="text-foreground font-semibold text-lg">Gemini</span>
+              <span className="text-foreground font-semibold text-lg">
+                Gemini
+              </span>
             )}
           </div>
         </motion.div>

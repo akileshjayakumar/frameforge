@@ -7,7 +7,7 @@ import React, {
   useCallback,
   useRef,
 } from "react";
-import { GameState, GameStatus, SentenceOption, VideoPreferences } from "@/types/game";
+import { GameState, GameStatus, SentenceOption, TopicOption, VideoPreferences } from "@/types/game";
 import {
   createInitialGameState,
   setTopic,
@@ -33,6 +33,7 @@ interface GameContextType {
   setGameStatus: (status: GameStatus) => void;
   setFinalImageUrl: (imageUrl: string) => void;
   resetGame: () => void;
+  generateTopics: () => Promise<TopicOption[]>;
   generateSentenceOptions: () => Promise<SentenceOption[]>;
   generateComicImage: () => Promise<void>;
   setVideoPreferences: (preferences: VideoPreferences) => void;
@@ -218,6 +219,31 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     aiInFlightRef.current = false;
     optionsInFlightRef.current = false;
     prefetchedOptionsRef.current = null;
+  }, []);
+
+  const generateTopics = useCallback(async (): Promise<TopicOption[]> => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await fetch("/api/topics", {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to generate topics");
+      }
+
+      const data = await response.json();
+      return data.topics || [];
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Failed to generate topics"
+      );
+      return [];
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
   const setVideoPreferences = useCallback((preferences: VideoPreferences) => {
@@ -670,6 +696,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
         setGameStatus,
         setFinalImageUrl: setFinalImageUrl,
         resetGame,
+        generateTopics,
         generateSentenceOptions,
         generateComicImage,
         setVideoPreferences,

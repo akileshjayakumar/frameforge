@@ -14,7 +14,11 @@ interface VideoPlayerWithDownloadProps {
   preferences?: VideoPreferencesType;
 }
 
-function VideoPlayerWithDownload({ videoUrl, poster, preferences }: VideoPlayerWithDownloadProps) {
+function VideoPlayerWithDownload({
+  videoUrl,
+  poster,
+  preferences,
+}: VideoPlayerWithDownloadProps) {
   const [isDownloading, setIsDownloading] = useState(false);
 
   const handleDownload = async () => {
@@ -46,7 +50,9 @@ function VideoPlayerWithDownload({ videoUrl, poster, preferences }: VideoPlayerW
 
         if (!downloadResponse.ok) {
           const errorData = await downloadResponse.json().catch(() => null);
-          throw new Error(errorData?.error || `Download failed (${downloadResponse.status})`);
+          throw new Error(
+            errorData?.error || `Download failed (${downloadResponse.status})`
+          );
         }
 
         const blob = await downloadResponse.blob();
@@ -61,22 +67,22 @@ function VideoPlayerWithDownload({ videoUrl, poster, preferences }: VideoPlayerW
       }
     } catch (error) {
       console.error("Download error:", error);
-      alert(error instanceof Error ? error.message : "Failed to download video");
+      alert(
+        error instanceof Error ? error.message : "Failed to download video"
+      );
     } finally {
       setIsDownloading(false);
     }
   };
 
   return (
-    <TerminalPanel
-      title="Your Video"
-      padding="md"
-      className="w-full"
-    >
+    <TerminalPanel title="Your Video" padding="md" className="w-full">
       <div className="flex flex-col gap-4">
-
         <div className="relative rounded-2xl overflow-hidden border-2 border-secondary/30 bg-[#0f0c09]">
-          <div className="absolute inset-0 bg-gradient-to-br from-secondary/20 via-primary/10 to-teal-500/20 opacity-50" aria-hidden />
+          <div
+            className="absolute inset-0 bg-gradient-to-br from-secondary/20 via-primary/10 to-teal-500/20 opacity-50"
+            aria-hidden
+          />
           <video
             src={videoUrl}
             controls
@@ -106,7 +112,8 @@ function VideoPlayerWithDownload({ videoUrl, poster, preferences }: VideoPlayerW
 }
 
 export function VideoDisplay() {
-  const { gameState, retryFetchVideo, generateStoryVideo, isLoading } = useGame();
+  const { gameState, retryFetchVideo, generateStoryVideo, isLoading } =
+    useGame();
 
   if (gameState.videoGenerationStatus === "idle") {
     return null;
@@ -130,11 +137,7 @@ export function VideoDisplay() {
 
   if (gameState.videoGenerationStatus === "error") {
     return (
-      <TerminalPanel
-        title="Error"
-        padding="md"
-        className="max-w-2xl"
-      >
+      <TerminalPanel title="Error" padding="md" className="max-w-2xl">
         <div className="p-4 tva-alert rounded flex flex-col gap-3 items-center text-center">
           <p className="text-foreground">
             Video generation failed. Please try again.
@@ -142,7 +145,7 @@ export function VideoDisplay() {
           <Button
             variant="primary"
             size="md"
-            onClick={generateStoryVideo}
+            onClick={() => generateStoryVideo()}
             disabled={isLoading}
           >
             Retry
@@ -154,11 +157,7 @@ export function VideoDisplay() {
 
   if (gameState.videoFetchStatus === "error") {
     return (
-      <TerminalPanel
-        title="Preparing Video"
-        padding="md"
-        className="max-w-2xl"
-      >
+      <TerminalPanel title="Preparing Video" padding="md" className="max-w-2xl">
         <div className="p-4 tva-alert rounded flex flex-col gap-3">
           <p className="text-foreground">
             We generated the video, but couldn’t fetch a playable copy.
@@ -195,8 +194,17 @@ export function VideoDisplay() {
     );
   }
 
-  if (gameState.videoGenerationStatus === "complete" && gameState.finalVideoUrl) {
-    return <VideoPlayerWithDownload videoUrl={gameState.finalVideoUrl} poster={gameState.finalImages?.[0]} preferences={gameState.videoPreferences} />;
+  if (
+    gameState.videoGenerationStatus === "complete" &&
+    gameState.finalVideoUrl
+  ) {
+    return (
+      <VideoPlayerWithDownload
+        videoUrl={gameState.finalVideoUrl}
+        poster={gameState.finalImages?.[0]}
+        preferences={gameState.videoPreferences || undefined}
+      />
+    );
   }
 
   return null;
