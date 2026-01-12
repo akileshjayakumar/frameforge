@@ -6,7 +6,11 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "FrameForge - AI vs Human Storytelling Game",
-  description: "A turn-based storytelling game where you compete against Gemini AI to create the most creative story",
+  description:
+    "A turn-based storytelling game where you compete against Gemini AI to create the most creative story",
+  icons: {
+    icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>",
+  },
 };
 
 export default function RootLayout({
@@ -16,7 +20,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning className="h-full">
-      <body className="bg-tva-base min-h-screen relative flex flex-col" suppressHydrationWarning>
+      <body
+        className="bg-tva-base min-h-screen relative flex flex-col"
+        suppressHydrationWarning
+      >
         <ParticleBackground />
         <GameProvider>
           <div className="flex-1 flex items-center justify-center">
