@@ -125,7 +125,7 @@ export default function GamePage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6 }}
-          className="flex-1 flex flex-col items-center justify-center gap-6 py-12 px-6 pb-8 w-full"
+          className="flex-1 flex flex-col items-center justify-center gap-6 py-12 px-6 pb-24 w-full"
         >
           {resetMessage && (
             <div className="px-4 py-2 rounded-lg bg-secondary/10 border border-secondary/20 text-secondary text-sm font-medium">
@@ -140,7 +140,7 @@ export default function GamePage() {
 
       {/* Active Play - Dead Center Layout */}
       {isPlaying && (
-        <div className="flex-1 flex flex-col items-center justify-center gap-4 p-4 pb-8 w-full">
+        <div className="flex-1 flex flex-col items-center justify-center gap-4 p-4 pb-24 w-full">
           {/* Progress Panel - Top, centered */}
           <div className="w-full max-w-[900px] mx-auto">
             <TerminalPanel
@@ -259,7 +259,7 @@ export default function GamePage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.4 }}
-              className="flex-1 flex flex-col items-center justify-center gap-4 p-4 pb-8 w-full"
+              className="flex-1 flex flex-col items-center justify-center gap-4 p-4 pb-24 w-full"
             >
               <div className="w-full max-w-4xl mx-auto">
                 <ComicDisplay />
@@ -275,7 +275,7 @@ export default function GamePage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.4 }}
-          className="flex-1 flex items-center justify-center gap-8 p-6 pb-8 w-full"
+          className="flex-1 flex items-center justify-center gap-8 p-6 pb-24 w-full"
         >
           <div className="w-full max-w-6xl flex items-center justify-center gap-8">
             {/* Left: Panels */}
@@ -297,7 +297,7 @@ export default function GamePage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.4 }}
-          className="flex-1 flex flex-col items-center justify-center gap-4 p-4 pb-8 w-full"
+          className="flex-1 flex flex-col items-center justify-center gap-4 p-4 pb-24 w-full"
         >
           <div className="w-full max-w-4xl mx-auto">
             <VideoDisplay />
@@ -311,7 +311,7 @@ export default function GamePage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
-          className="flex-1 flex flex-col items-center justify-center gap-6 p-4 pb-8 w-full"
+          className="flex-1 flex flex-col items-center justify-center gap-6 p-4 pb-24 w-full"
         >
           <div className="w-full max-w-5xl mx-auto flex flex-col items-center gap-6">
             <ComicDisplay />

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { GameProvider } from "@/contexts/GameContext";
 import { ParticleBackground } from "@/components/layout/ParticleBackground";
+import { Footer } from "@/components/layout/Footer";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -28,6 +29,7 @@ export default function RootLayout({
           <div className="flex-1 flex items-center justify-center">
             {children}
           </div>
+          <Footer />
         </GameProvider>
       </body>
     </html>
