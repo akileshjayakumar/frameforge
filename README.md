@@ -1,6 +1,7 @@
 # FrameForge
 
 FrameForge is a turn-based storytelling game where you co-write a short story with Gemini, then turn it into comic panels and a generated video.
+Built during the Gemini 3 Hackathon in Singapore.
 
 ## Quick Start
 
